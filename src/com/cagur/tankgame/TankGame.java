@@ -15,6 +15,10 @@ public class TankGame extends JFrame {
     }
     public TankGame(){
         mp = new MyPanel();
+        //将mp放入到Thread并启动线程，
+        Thread thread= new Thread(mp);
+        thread.start();
+
         this.add(mp); // 面板
         this.setSize(1000,750);
         this.addKeyListener(mp);//增加监听器

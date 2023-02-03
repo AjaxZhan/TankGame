@@ -11,8 +11,10 @@ import java.util.Vector;
  * @version 1.0
  */
 @SuppressWarnings({"all"})
+//为了让Panel不停重新绘制子弹，需要将MyPanel做成线程。秒啊。不让子弹就绘制了一次。除非你按下键
 
-public class MyPanel extends JPanel implements KeyListener {
+
+public class MyPanel extends JPanel implements KeyListener,Runnable {
     //定义我的坦克
     Hero hero = null;
     //定义敌人坦克，放入到vector集合中
@@ -39,6 +41,12 @@ public class MyPanel extends JPanel implements KeyListener {
             //取出坦克
             EnemyTank enemyTank = enemyTanks.get(i);
             drawTank(enemyTank.getX(),enemyTank.getY(),g,enemyTank.getDirect(),0);
+        }
+        //画出hero射击的子弹
+        if(hero.shot!= null && hero.shot.isLive == true){
+            System.out.println("子弹被绘制");
+            //draw bullet
+            g.fill3DRect(hero.shot.x,hero.shot.y,1,1,false);
         }
 
     }
@@ -140,5 +148,18 @@ public class MyPanel extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+    //将mypanel制作成线程
+
+    @Override
+    public void run() {
+        while(true) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            this.repaint();
+        }
     }
 }
