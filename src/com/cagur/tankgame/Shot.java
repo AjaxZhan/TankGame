@@ -45,7 +45,8 @@ public class Shot implements Runnable{
             //输出x和y的坐标
             System.out.println("子弹x = " + x + "子弹y=" + y);
             //当子弹移动到面板边界就销毁
-            if(!(x>=0 && x<=1000 && y>=0 && y<=750)){
+            //当子弹碰到敌人坦克时，也应该结束线程
+            if(!(x>=0 && x<=1000 && y>=0 && y<=750 && isLive)){
                 isLive = false;
                 System.out.println("子弹线程退出");
                 break; // 退出线程
