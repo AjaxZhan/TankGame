@@ -127,6 +127,13 @@ public class MyPanel extends JPanel implements KeyListener {
             hero.setDirect(3);
             hero.moveLeft();
         }
+        //如果用户按下J，就发射
+        if(e.getKeyCode() == KeyEvent.VK_J){
+            System.out.println("用户按下了J，开始射击");
+            hero.shotEnemy();
+        }
+
+        //重绘
         this.repaint();
     }
 

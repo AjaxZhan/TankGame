@@ -10,6 +10,7 @@ public class Shot implements Runnable{
     int y;
     int direct = 0; // direction
     int speed = 2;
+    boolean isLive = true;  //可以存活
 
     public Shot(int x, int y, int direct) {
         this.x = x;
@@ -42,6 +43,13 @@ public class Shot implements Runnable{
                     break;
             }
             //输出x和y的坐标
+            System.out.println("子弹x = " + x + "子弹y=" + y);
+            //当子弹移动到面板边界就销毁
+            if(!(x>=0 && x<=1000 && y>=0 && y<=750)){
+                isLive = false;
+                System.out.println("子弹线程退出");
+                break; // 退出线程
+            }
 
         }
     }
