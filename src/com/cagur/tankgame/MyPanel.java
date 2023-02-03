@@ -57,6 +57,12 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
         g.fillRect(0,0,1000,750);//填充矩形，默认是黑色
         //画出坦克
         drawTank(hero.getX(),hero.getY(),g,hero.getDirect(),1);
+        //网友建议：在这里加个休眠，解决第一个坦克无法出现Bomb效果的问题
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         //如果bombs集合中有对象，就画出炸弹
         for(int i=0;i<bombs.size();i++){
             Bomb bomb = bombs.get(i);
@@ -174,7 +180,9 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
                 s.y<enemyTank.getY()+60){
                     s.isLive = false;
                     enemyTank.isLive = false;
-//                    enemyTanks.remove(enemyTank);直接删掉好像有问题
+                    //当我的子弹击中敌人坦克后，将enemyTank从集合中删掉
+                    enemyTanks.remove(enemyTank);//直接删掉好像有问题
+                    enemyTankSize--; //忘记加上这句了
                     //创建Bomb对象，加入到Bombs集合中
                     Bomb bomb = new Bomb(enemyTank.getX(), enemyTank.getY());
                     bombs.add(bomb);
@@ -187,6 +195,9 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
                 s.y < enemyTank.getY() + 40){
                     s.isLive = false;
                     enemyTank.isLive = false;
+                    //当我的子弹击中敌人坦克后，将enemyTank从集合中删掉
+                    enemyTanks.remove(enemyTank);//直接删掉好像有问题
+                    enemyTankSize--; //忘记加上这句了
                     //创建Bomb对象，加入到Bombs集合中
                     Bomb bomb = new Bomb(enemyTank.getX(), enemyTank.getY());
                     bombs.add(bomb);
