@@ -219,16 +219,20 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
             //改变坦克的方向
             hero.setDirect(0);
             //改变坦克坐标
-            hero.moveUp();
+            if(hero.getY() > 0)
+                hero.moveUp();
         }else if(e.getKeyCode() ==KeyEvent.VK_D){
             hero.setDirect(1);
-            hero.moveRight();
+            if(hero.getX() + 60 < 1000)
+                hero.moveRight();
         }else if(e.getKeyCode() ==KeyEvent.VK_S){
             hero.setDirect(2);
-            hero.moveDown();
+            if(hero.getY() +60 <  750)
+                hero.moveDown();
         }else if(e.getKeyCode() ==KeyEvent.VK_A){
             hero.setDirect(3);
-            hero.moveLeft();
+            if(hero.getX() > 0)
+                hero.moveLeft();
         }
         //如果用户按下J，就发射
         if(e.getKeyCode() == KeyEvent.VK_J){
