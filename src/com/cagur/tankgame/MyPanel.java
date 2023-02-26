@@ -36,6 +36,8 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
             //初始化坦克
             EnemyTank enemyTank = new EnemyTank(100 * (i + 1), 0);
             enemyTank.setDirect(2);
+            //启动敌人坦克线程，使之移动
+            new Thread(enemyTank).start();
             //给Enemy添加一个子弹
             Shot shot = new Shot(enemyTank.getX() + 20,enemyTank.getY()+60,enemyTank.getDirect());
             //加入到enemyTank的vector内
@@ -77,14 +79,14 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
             }
         }
 
-        //画出敌人的坦克
+        //画出敌人的坦克，遍历vector
         for (int i = 0; i < enemyTanks.size(); i++) {
             //取出坦克
             EnemyTank enemyTank = enemyTanks.get(i);
             //判断坦克是否存活，存活再画
             if(enemyTank.isLive) {
                 drawTank(enemyTank.getX(), enemyTank.getY(), g, enemyTank.getDirect(), 0);
-                //画出敌人坦克子弹
+                //画坦克的同时，画出敌人坦克子弹
                 for (int j = 0; j < enemyTank.shots.size(); j++) {
                     //取出子弹
                     Shot shot = enemyTank.shots.get(j);
@@ -99,7 +101,7 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
             }
         }
         //画出hero射击的子弹
-        if(hero.shot!= null && hero.shot.isLive == true){
+        if(hero.shot!= null && hero.shot.isLive == true){ //先判断是否为空，防止空指针异常
             System.out.println("子弹被绘制");
             //draw bullet
             g.fill3DRect(hero.shot.x,hero.shot.y,1,1,false);
