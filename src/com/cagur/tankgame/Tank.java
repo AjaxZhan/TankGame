@@ -9,6 +9,8 @@ public class Tank {
     private int y;
     private int direct = 0;//表示坦克的方向，0123从上开始顺时针
     private int speed = 1;
+    //将是否存活直接到父类
+    boolean isLive = true;
     //上右下左移动的方法
     public void moveUp(){
         y-=speed;
