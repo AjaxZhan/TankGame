@@ -65,6 +65,7 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
         //如果bombs集合中有对象，就画出炸弹
         for(int i=0;i<bombs.size();i++){
             Bomb bomb = bombs.get(i);
@@ -100,11 +101,23 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
                 }
             }
         }
+
         //画出hero射击的子弹
-        if(hero.shot!= null && hero.shot.isLive == true){ //先判断是否为空，防止空指针异常
-            System.out.println("子弹被绘制");
-            //draw bullet
-            g.fill3DRect(hero.shot.x,hero.shot.y,1,1,false);
+//        if(hero.shot!= null && hero.shot.isLive == true){ //先判断是否为空，防止空指针异常
+//            System.out.println("子弹被绘制");
+//            //draw bullet
+//            g.fill3DRect(hero.shot.x,hero.shot.y,1,1,false);
+//        }
+        //遍历hero子弹的容器
+        for(int i =0;i<hero.shots.size();i++){
+            Shot shot = hero.shots.get(i);
+            if(shot!= null && shot.isLive == true) { //先判断是否为空，防止空指针异常
+                System.out.println("子弹被绘制");
+                g.fill3DRect(shot.x, shot.y, 1, 1, false);
+            }else{
+                //该对象无效，则从集合中取出。
+                hero.shots.remove(shot);
+            }
         }
 
     }
@@ -172,6 +185,21 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
     }
     //编写方法，判断我方子弹是否击中敌方坦克
     //什么时候判断我方子弹是否击中敌人坦克？ run方法
+    //如果我方坦克有多颗子弹，在判断是否击中就需要将集合中的子弹全部取出进行判断
+    public void hitEnemyTank(){
+        //遍历所有子弹
+        Shot shot = null;
+        for(int j = 0;j<hero.shots.size();j++){
+            shot = hero.shots.get(j);
+            if(shot!= null && shot.isLive){ // 这里记得添加为空，否则会抛出空指针异常
+                //遍历敌人所有坦克
+                for(int i=0;i<enemyTankSize;i++){
+                    EnemyTank enemyTank = enemyTanks.get(i);
+                    hitTank(shot,enemyTank);
+                }
+            }
+        }
+    }
     public void hitTank(Shot s, EnemyTank enemyTank){
         //判断s 击中坦克 == 》 子弹的坐标是否在坦克的区域内
         switch (enemyTank.getDirect()){
@@ -236,8 +264,11 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
         }
         //如果用户按下J，就发射
         if(e.getKeyCode() == KeyEvent.VK_J){
-            System.out.println("用户按下了J，开始射击");
-            hero.shotEnemy();
+//            System.out.println("用户按下了J，开始射击");
+//            if(hero.shot == null || !hero.shot.isLive) // 当一颗子弹打完才能打
+//                hero.shotEnemy();
+            //发射多颗子弹
+            hero.shotEnemy(); // 因为遍历放在了paint，这里不需要判断
         }
 
         //重绘
@@ -258,14 +289,17 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            //原先：判断一颗子弹是否击中了敌方坦克
+            //改进，将下面这段代码封装，在此基础上遍历集合。
+            hitEnemyTank();
             //添加判断：子弹是否击中了敌人坦克
-            if(hero.shot!= null && hero.shot.isLive){ // 这里记得添加为空，否则会抛出空指针异常
-                //遍历敌人所有坦克
-                for(int i=0;i<enemyTankSize;i++){
-                    EnemyTank enemyTank = enemyTanks.get(i);
-                    hitTank(hero.shot,enemyTank);
-                }
-            }
+//            if(hero.shot!= null && hero.shot.isLive){ // 这里记得添加为空，否则会抛出空指针异常
+//                //遍历敌人所有坦克
+//                for(int i=0;i<enemyTankSize;i++){
+//                    EnemyTank enemyTank = enemyTanks.get(i);
+//                    hitTank(hero.shot,enemyTank);
+//                }
+//            }
             this.repaint();
         }
     }
