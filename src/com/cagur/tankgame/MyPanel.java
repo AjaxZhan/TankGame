@@ -36,6 +36,7 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
             //初始化坦克
             EnemyTank enemyTank = new EnemyTank(100 * (i + 1), 0);
             enemyTank.setDirect(2);
+            enemyTank.setEnemyTanks(enemyTanks);
             //启动敌人坦克线程，使之移动
             new Thread(enemyTank).start();
             //给Enemy添加一个子弹
@@ -47,16 +48,31 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
             //加入坦克
             enemyTanks.add(enemyTank);
         }
+
+
         //初始化图片对象
         image1 = Toolkit.getDefaultToolkit().getImage(MyPanel.class.getResource("/bomb_1.gif"));
         image2 = Toolkit.getDefaultToolkit().getImage(MyPanel.class.getResource("/bomb_2.gif"));
         image3 = Toolkit.getDefaultToolkit().getImage(MyPanel.class.getResource("/bomb_3.gif"));
     }
 
+    //编写方法，显示我方击毁敌方坦克的数量
+    public void showInfo(Graphics g){
+
+        g.setColor(Color.BLACK);
+        Font font = new Font("宋体", Font.BOLD, 25);
+        g.setFont(font);
+
+        g.drawString("您累计击毁敌方坦克",1020,30);
+
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         g.fillRect(0,0,1000,750);//填充矩形，默认是黑色
+        //调用显示记录的方法
+
         //画出坦克
         if(hero !=null && hero.isLive)
             drawTank(hero.getX(),hero.getY(),g,hero.getDirect(),1);
