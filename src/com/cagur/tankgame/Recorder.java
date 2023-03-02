@@ -1,8 +1,6 @@
 package com.cagur.tankgame;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Vector;
 
 /**
@@ -16,8 +14,41 @@ public class Recorder {
     private static int allEnemyTanks = 0;
     //定义IO对象 ： 用于写数据到文件中
     private static BufferedWriter bw = null;
+    private static BufferedReader br = null;
     //路径
     private static String recordFile = "e:\\myRecord.txt";
+    //定义一个Node的Vector，用于保存敌人的Node信息
+    private static Vector<Node> nodes = new Vector<>();
+
+    //增加一个方法，用于读取文件，恢复相关信息
+    public static Vector<Node> getNodesAndCount(){
+        try {
+            br = new BufferedReader(new FileReader(recordFile));
+            allEnemyTanks = Integer.parseInt(br.readLine());
+            //循环读取文件，生成Node集合
+            String line = "";
+            while((line = br.readLine())!=null){
+                //分割一行数据
+                String[] xyd = line.split(" ");
+                Node node = new Node(Integer.parseInt(xyd[0]), Integer.parseInt(xyd[1]), Integer.parseInt(xyd[2]));
+                nodes.add(node); //将读取到的Node放到集合
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if(br!=null){
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return nodes;
+    }
 
     //set
     public static void setEnemyTanks(Vector<EnemyTank> enemyTanks) {

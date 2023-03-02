@@ -15,6 +15,8 @@ import java.util.Vector;
 
 
 public class MyPanel extends JPanel implements KeyListener,Runnable {
+    //定义一个集合，用于恢复敌人的坐标和方向
+    Vector<Node> nodes = new Vector<>();
     //定义我的坦克
     Hero hero = null;
     //定义敌人坦克，放入到vector集合中
@@ -28,29 +30,61 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
     Image image3 = null;
     //默认坦克数量
     int enemyTankSize = 3;
-    public MyPanel(){
-        //将MyPanel对象的enemyTanks设置给Recorder对象中的Vector
+    public MyPanel(String key){ // 启动的时候传入一个值
+
+        //获取Recorder内的文件，读取坦克信息
+        nodes = Recorder.getNodesAndCount();
+
+        //将MyPanel对象的enemyTanks设置给Recorder对象中的Vector，为了防触碰的功能
         Recorder.setEnemyTanks(enemyTanks);
 
-        hero = new Hero(500,600);//初始化自己的坦克
+        //初始化用户坦克
+        hero = new Hero(500,600);
         hero.setSpeed(4);//设置速度
-        //初始化敌人坦克
-        for (int i = 0; i < enemyTankSize; i++) {
-            //初始化坦克
-            EnemyTank enemyTank = new EnemyTank(100 * (i + 1), 0);
-            enemyTank.setDirect(2);
-            enemyTank.setEnemyTanks(enemyTanks);
-            //启动敌人坦克线程，使之移动
-            new Thread(enemyTank).start();
-            //给Enemy添加一个子弹
-            Shot shot = new Shot(enemyTank.getX() + 20,enemyTank.getY()+60,enemyTank.getDirect());
-            //加入到enemyTank的vector内
-            enemyTank.shots.add(shot);
-            //启动子弹线程
-            new Thread(shot).start();
-            //加入坦克
-            enemyTanks.add(enemyTank);
+
+        switch(key){
+            case "1": // 开始新游戏
+                //初始化敌人坦克
+                for (int i = 0; i < enemyTankSize; i++) {
+                    //初始化坦克
+                    EnemyTank enemyTank = new EnemyTank(100 * (i + 1), 0);
+                    enemyTank.setDirect(2);
+                    enemyTank.setEnemyTanks(enemyTanks);
+                    //启动敌人坦克线程，使之移动
+                    new Thread(enemyTank).start();
+                    //给Enemy添加一个子弹
+                    Shot shot = new Shot(enemyTank.getX() + 20,enemyTank.getY()+60,enemyTank.getDirect());
+                    //加入到enemyTank的vector内
+                    enemyTank.shots.add(shot);
+                    //启动子弹线程
+                    new Thread(shot).start();
+                    //加入坦克
+                    enemyTanks.add(enemyTank);
+                }
+                break;
+            case "2": // 继续上局游戏
+                //初始化敌人坦克
+                for (int i = 0; i < nodes.size(); i++) {
+                    Node node = nodes.get(i);
+                    //初始化坦克
+                    EnemyTank enemyTank = new EnemyTank(node.getX(), node.getY());
+                    enemyTank.setDirect(node.getDirect());
+                    enemyTank.setEnemyTanks(enemyTanks);
+                    //启动敌人坦克线程，使之移动
+                    new Thread(enemyTank).start();
+                    //给Enemy添加一个子弹
+                    Shot shot = new Shot(enemyTank.getX() + 20,enemyTank.getY()+60,enemyTank.getDirect());
+                    //加入到enemyTank的vector内
+                    enemyTank.shots.add(shot);
+                    //启动子弹线程
+                    new Thread(shot).start();
+                    //加入坦克
+                    enemyTanks.add(enemyTank);
+                }
+                break;
         }
+
+
 
 
         //初始化图片对象
