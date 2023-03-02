@@ -29,7 +29,10 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
     //默认坦克数量
     int enemyTankSize = 3;
     public MyPanel(){
-        hero = new Hero(100,100);//初始化自己的坦克
+        //将MyPanel对象的enemyTanks设置给Recorder对象中的Vector
+        Recorder.setEnemyTanks(enemyTanks);
+
+        hero = new Hero(500,600);//初始化自己的坦克
         hero.setSpeed(4);//设置速度
         //初始化敌人坦克
         for (int i = 0; i < enemyTankSize; i++) {
@@ -59,20 +62,24 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
     //编写方法，显示我方击毁敌方坦克的数量
     public void showInfo(Graphics g){
 
-        g.setColor(Color.BLACK);
+        g.setColor(Color.BLUE);
         Font font = new Font("宋体", Font.BOLD, 25);
         g.setFont(font);
 
         g.drawString("您累计击毁敌方坦克",1020,30);
+        drawTank(1020,60,g,0,0); // 画出一个敌方tank
+        //这里需要注意，将g传入后会改变，所以需要重新setColor
+        g.setColor(Color.BLUE);
+        g.drawString( Recorder.getAllEnemyTanks()+"",1080,100);
 
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        g.fillRect(0,0,1000,750);//填充矩形，默认是黑色
+        g.fillRect(0,0,1300,750);//填充矩形，默认是黑色
         //调用显示记录的方法
-
+        showInfo(g);
         //画出坦克
         if(hero !=null && hero.isLive)
             drawTank(hero.getX(),hero.getY(),g,hero.getDirect(),1);
@@ -251,6 +258,8 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
                         EnemyTank enemytank = (EnemyTank)tank;
                         enemyTanks.remove(enemytank);//直接删掉好像有问题
                         enemyTankSize--; //忘记加上这句了
+                        //记录 ++
+                        Recorder.addRecord();
                     }
                     //创建Bomb对象，加入到Bombs集合中
                     Bomb bomb = new Bomb(tank.getX(), tank.getY());
@@ -269,6 +278,8 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
                         //当我的子弹击中敌人坦克后，将enemyTank从集合中删掉
                         enemyTanks.remove(enemytank);//直接删掉好像有问题
                         enemyTankSize--; //忘记加上这句了
+                        //记录++
+                        Recorder.addRecord();
                     }
                     //创建Bomb对象，加入到Bombs集合中
                     Bomb bomb = new Bomb(tank.getX(), tank.getY());
