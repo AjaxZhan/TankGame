@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
 
 /**
@@ -32,8 +34,25 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
     int enemyTankSize = 3;
     public MyPanel(String key){ // 启动的时候传入一个值
 
-        //获取Recorder内的文件，读取坦克信息
-        nodes = Recorder.getNodesAndCount();
+        //判断记录文件是否存在，不存在不能读
+        File file = new File(Recorder.getRecordFile());
+        if(file.exists()){
+            //获取Recorder内的文件，读取坦克信息
+            nodes = Recorder.getNodesAndCount();
+        }else{
+            //只能开启新游戏
+            key = "1";
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
+        }
+
+
+
 
         //将MyPanel对象的enemyTanks设置给Recorder对象中的Vector，为了防触碰的功能
         Recorder.setEnemyTanks(enemyTanks);
@@ -91,6 +110,9 @@ public class MyPanel extends JPanel implements KeyListener,Runnable {
         image1 = Toolkit.getDefaultToolkit().getImage(MyPanel.class.getResource("/bomb_1.gif"));
         image2 = Toolkit.getDefaultToolkit().getImage(MyPanel.class.getResource("/bomb_2.gif"));
         image3 = Toolkit.getDefaultToolkit().getImage(MyPanel.class.getResource("/bomb_3.gif"));
+
+        //播放指定音乐
+        new AePlayWave("src/111.wav").start();
     }
 
     //编写方法，显示我方击毁敌方坦克的数量

@@ -15,8 +15,10 @@ public class Recorder {
     //定义IO对象 ： 用于写数据到文件中
     private static BufferedWriter bw = null;
     private static BufferedReader br = null;
-    //路径
-    private static String recordFile = "e:\\myRecord.txt";
+    //把记录文件保存到src目录下
+//    private static String recordFile = "src/myRecord.txt";
+    private static String recordFile = "d:\\myRecord.txt";
+
     //定义一个Node的Vector，用于保存敌人的Node信息
     private static Vector<Node> nodes = new Vector<>();
 
@@ -34,9 +36,9 @@ public class Recorder {
                 nodes.add(node); //将读取到的Node放到集合
             }
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         } finally {
             if(br!=null){
                 try {
@@ -65,6 +67,11 @@ public class Recorder {
     //当我方击毁一辆坦克应该自增
     public static void addRecord(){
         Recorder.allEnemyTanks ++;
+    }
+
+    //返回记录文件的路径
+    public static String getRecordFile() {
+        return recordFile;
     }
 
     //当游戏退出时，存盘到文件中
